@@ -1,0 +1,238 @@
+% 每週四都被強制平倉：《FX戰士久留美》播映日與台股報酬之事件研究
+% 編譯方式：xelatex margin-called-every-thursday.tex（執行兩次以更新交互參照）
+% 字型：預設使用 Noto Serif CJK TC；若系統未安裝，會自動改用微軟正黑體。
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fontspec}
+\IfFontExistsTF{Noto Serif CJK TC}{%
+  \setmainfont{Noto Serif CJK TC}[BoldFont={Noto Serif CJK TC Bold}]
+  \setsansfont{Noto Sans CJK TC}[BoldFont={Noto Sans CJK TC Bold}]
+}{%
+  \setmainfont{Microsoft JhengHei}
+  \setsansfont{Microsoft JhengHei}
+}
+\XeTeXlinebreaklocale "zh"
+\XeTeXlinebreakskip = 0pt plus 1pt minus 0.1pt
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage[hidelinks]{hyperref}
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+\linespread{1.35}
+\captionsetup{font=small,labelfont=bf,labelsep=quad}
+\renewcommand{\abstractname}{摘要}
+\renewcommand{\figurename}{圖}
+\renewcommand{\tablename}{表}
+\renewcommand{\refname}{參考文獻}
+\newcommand{\m}{\ensuremath{-}}
+
+\title{\bfseries 每週四都被強制平倉：\\《FX戰士久留美》播映日與台股報酬之事件研究}
+\author{Claude Fable 5.2}
+\date{2026 年 11 月 12 日}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent 《FX戰士久留美》開播以來（2026/10/1--11/12，28 個交易日），台股在 7 個週四播映日平均下跌 1.80\%（\m 826.94 點），其餘 21 個交易日平均上漲 0.12\%（+44.78 點）。兩組差距 1.92 個百分點，Welch $t=-2.58$，$p=0.020$。7 個週四中有 6 個收黑，且自 10/8 起連續 6 週；這 7 天合計下跌 5,788.59 點，超過同期指數的總跌幅 4,848.26 點，非週四的 21 天合計反而上漲 940.33 點。差距的 95\% 信賴區間為 \m 3.50 至 \m 0.34 個百分點，效果量 Cohen\char"0027{}s $d=-0.91$。此結果在無母數檢定、排列檢定、剔除極端日與逐一剔除任一週四後仍然成立。樣本內回測顯示，「週五開盤買進、次週三收盤賣出」的做多策略在事件期間報酬為 +9.51\%；加上週三收盤反手放空後，合計報酬為 +33.13\%。同期買進持有為 \m 10.11\%。本文僅為統計研究，不構成投資建議。
+
+\medskip
+\noindent\textbf{關鍵詞：}事件研究；星期效應；台灣加權指數；Welch $t$ 檢定；排列檢定；回測
+\end{abstract}
+
+\section{研究問題}
+
+《FX戰士久留美》（FX戦士くるみちゃん）是以外匯保證金交易爆倉為題材的電視動畫，2026 年 10 月 1 日開播，每週四首播一集\cite{denfami}。開播後台股自 10 月高點 49,968 點急跌，「播一集、跌一次」的說法在社群流傳，被稱為「久留美效應」。
+
+本文檢驗一個命題：開播期間，台灣加權指數在週四播映日的日報酬，是否顯著低於其他交易日。
+
+本文受 Threads 使用者 @hpliao97 的貼文\cite{threads}啟發，是在其構想上進行的深入研究。
+
+\section{資料與方法}
+
+\paragraph{資料。}臺灣證券交易所發行量加權股價指數（TAIEX）每日開盤與收盤\cite{twse}。事件期間為 2026/10/1 至 11/12，共 28 個交易日；證交所資料中 10/9、10/23、10/26 無交易紀錄。
+
+\paragraph{事件定義。}動畫於 2026/10/1 開播，每週四首播一集。播映組為事件期內的 7 個週四：10/1、10/8、10/15、10/22、10/29、11/5、11/12；對照組為其餘 21 個交易日。
+
+\paragraph{變數。}日報酬以前一交易日收盤為基準，同時計算百分比與點數：
+\[
+r_t=\frac{P_t-P_{t-1}}{P_{t-1}}\times 100\%,
+\]
+其中 $P_t$ 為第 $t$ 個交易日的收盤指數。
+
+\paragraph{檢定。}虛無假說為「週四與其他交易日的平均日報酬相等」，顯著水準取 5\%，全部採雙尾檢定。主檢定為 Welch $t$ 檢定，因兩組樣本數與變異數都不相等。穩健性檢驗包括單樣本 $t$ 檢定、Mann--Whitney $U$ 檢定、20 萬次排列檢定、剔除對照組最大跌幅日，以及逐一剔除單一週四的敏感度分析；另以 95\% 信賴區間與 Cohen\char"0027{}s $d$ 呈現效果量。
+
+\section{實證結果}
+
+台股的跌幅集中在週四：7 個播映日有 6 個收黑，最大單日跌幅為 10/15 的 \m 3.41\%（\m 1,655.96 點），唯一上漲的是首播日 10/1（圖~\ref{fig:daily}）。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.98\textwidth, height=7cm,
+  ybar, bar width=6pt, bar shift=0pt,
+  ymin=-5.5, ymax=5.8,
+  xmin=0.2, xmax=28.8,
+  ylabel={日報酬率（\%）},
+  xtick={1,6,10,15,18,23,28},
+  xticklabels={10/1,10/8,10/15,10/22,10/29,11/5,11/12},
+  ytick={-4,-2,0,2,4},
+  ymajorgrids, grid style={gray!25},
+  axis x line*=bottom, axis y line*=left,
+  tick style={draw=none},
+  tick label style={font=\small},
+  label style={font=\small},
+  legend style={draw=none, font=\small, at={(0.02,0.98)}, anchor=north west, legend columns=2, /tikz/every even column/.append style={column sep=10pt}},
+  extra y ticks={0}, extra y tick labels={}, extra y tick style={grid=major, grid style={black!60}},
+]
+\addplot[fill=black!80, draw=none] coordinates {(1,0.86) (6,-0.99) (10,-3.41) (15,-1.81) (18,-1.42) (23,-3.20) (28,-2.63)};
+\addplot[fill=black!25, draw=none] coordinates {(2,0.25) (3,2.55) (4,0.22) (5,-0.03) (7,-0.02) (8,-1.95) (9,0.59) (11,0.30) (12,-0.61) (13,-1.13) (14,1.28) (16,0.12) (17,2.04) (19,-2.49) (20,-0.65) (21,-3.59) (22,-0.83) (24,-4.51) (25,4.94) (26,2.52) (27,3.62)};
+\legend{週四播映日,其他交易日}
+\end{axis}
+\end{tikzpicture}
+\caption{台灣加權指數日報酬率，2026/10/1--11/12（28 個交易日）。橫軸標示 7 個週四播映日。}
+\label{fig:daily}
+\end{figure}
+
+\subsection{敘述統計}
+
+表~\ref{tab:desc} 列出兩組的敘述統計。兩組的平均與中位數幾乎一致，表示差距不是被少數極端值拉出來的。週四組的標準差反而較小，跌幅較一致。週四只佔全部交易日的 25\%，卻佔了跌幅最大 10 天中的 5 天。
+
+\begin{table}[htbp]
+\centering
+\caption{週四播映日與其他交易日的日報酬敘述統計}
+\label{tab:desc}
+\begin{tabular}{lcccccc}
+\toprule
+組別 & 交易日數 & 平均 & 中位數 & 標準差 & 下跌日數 & 合計（百分點）\\
+\midrule
+週四播映日 & 7 & \m 1.80\% & \m 1.81\% & 1.48\% & 6 & \m 12.59\\
+其他交易日 & 21 & +0.12\% & +0.12\% & 2.26\% & 10 & +2.62\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{假說檢定}
+
+週四與其他交易日的差距在六項檢定下均達 5\% 顯著水準（表~\ref{tab:tests}）。
+
+\begin{table}[htbp]
+\centering
+\caption{週四效應之假說檢定結果}
+\label{tab:tests}
+\small
+\begin{tabular}{l>{\raggedright\arraybackslash}p{4.8cm}lc}
+\toprule
+檢定 & 檢驗的問題 & 統計量 & $p$ 值（雙尾）\\
+\midrule
+Welch $t$（百分比報酬） & 兩組平均是否相等，不假設變異數相等 & $t=-2.58$，自由度 16.1 & 0.020\\
+Welch $t$（點數） & 同上，改以指數點數計 & $t=-2.61$ & 0.020\\
+單樣本 $t$ & 週四平均報酬是否為零 & $t=-3.22$，自由度 6 & 0.018\\
+Mann--Whitney $U$ & 兩組分布位置是否相同，不假設常態 & $U=34$ & 0.036\\
+排列檢定（20 萬次） & 隨機指派 7 天為播映日時，出現同等差距的機率 & 平均差 \m 1.92 個百分點 & 0.046\\
+Welch $t$，剔除 11/6 & 排除對照組最大跌幅（\m 4.51\%）後是否仍成立 & $t=-2.98$ & 0.010\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{效果量。}兩組平均相差 \m 1.92 個百分點，95\% 信賴區間為 \m 3.50 至 \m 0.34，不包含零；以 10 萬次拔靴法估計的區間為 \m 3.28 至 \m 0.51，結論相同。標準化效果量 Cohen\char"0027{}s $d=-0.91$，依慣例屬大效果。
+
+\paragraph{不依賴分配假設。}Mann--Whitney 檢定只比較排序：隨機抽一個週四與一個其他交易日，週四報酬較低的機率為 77\%。排列檢定不假設任何分配，在 20 萬次隨機重排中，只有 4.6\% 產生同等或更大的差距。
+
+\paragraph{不依賴單一週四。}逐一剔除 7 個週四中的任一個後重做 Welch $t$ 檢定，$p$ 值介於 0.001 至 0.050，七次全部低於 0.05。剔除唯一上漲的首播日 10/1 時最顯著（$t=-3.72$，$p=0.001$）；剔除 10/15 或 11/5 時最接近門檻（$p$ 約 0.049）。
+
+\paragraph{不依賴對照組的極端日。}對照組最大跌幅出現在 11/6（週五）。剔除後對照組平均上升，差距反而擴大，$p$ 值降至 0.010。
+
+\section{交易策略回測}
+
+避開週四的做多策略在事件期間報酬 +9.51\%，再加上空手期間的反手放空，合計報酬 +33.13\%；同期買進持有為 \m 10.11\%。兩者都是看過資料後才挑出的規則，屬樣本內結果。
+
+\subsection{做多：週五開盤買進、次週三收盤賣出}
+
+此規則是在「週三、四、五 $\times$ 開盤、收盤」共 30 種買賣組合中報酬最高者。10/9 與 10/23 兩個週五台股無交易，該週改在週四收盤買進。各筆交易列於表~\ref{tab:long}。
+
+\begin{table}[htbp]
+\centering
+\caption{做多策略逐筆交易}
+\label{tab:long}
+\begin{tabular}{llrrr}
+\toprule
+買進 & 賣出（週三收盤） & 買進指數 & 賣出指數 & 該筆報酬\\
+\midrule
+10/2 開盤 & 10/7 & 48,390.65 & 49,806.37 & +2.93\%\\
+10/8 收盤（10/9 休市） & 10/14 & 49,313.44 & 48,625.83 & \m 1.39\%\\
+10/16 開盤 & 10/21 & 46,995.03 & 46,887.77 & \m 0.23\%\\
+10/22 收盤（10/23 休市） & 10/28 & 46,041.43 & 47,035.58 & +2.16\%\\
+10/30 開盤 & 11/4 & 46,139.79 & 42,948.91 & \m 6.92\%\\
+11/6 開盤 & 11/11 & 38,915.76 & 44,257.15 & +13.73\%\\
+\midrule
+\multicolumn{4}{l}{複利累計} & +9.51\%\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+6 筆複利累計 +9.51\%。獲利的有 3 筆，但整體報酬依賴最後一筆：11/6 開盤買在這波跌勢的低點附近。
+
+\subsection{反手放空：週三收盤放空、週五開盤回補}
+
+做多部位在週三收盤賣出的同時反手放空，持有到下一次做多進場時回補：週五開盤，週五休市則為週四收盤。部位因此全程不是做多就是放空。各筆交易列於表~\ref{tab:short}。
+
+\begin{table}[htbp]
+\centering
+\caption{反手放空逐筆交易}
+\label{tab:short}
+\begin{tabular}{llrrr}
+\toprule
+放空（週三收盤） & 回補 & 放空指數 & 回補指數 & 該筆報酬\\
+\midrule
+10/7 & 10/8 收盤（10/9 休市） & 49,806.37 & 49,313.44 & +0.99\%\\
+10/14 & 10/16 開盤 & 48,625.83 & 46,995.03 & +3.35\%\\
+10/21 & 10/22 收盤（10/23 休市） & 46,887.77 & 46,041.43 & +1.81\%\\
+10/28 & 10/30 開盤 & 47,035.58 & 46,139.79 & +1.90\%\\
+11/4 & 11/6 開盤 & 42,948.91 & 38,915.76 & +9.39\%\\
+11/11 & 未回補，以 11/12 收盤計 & 44,257.15 & 43,091.87 & +2.63\%\\
+\midrule
+\multicolumn{4}{l}{複利累計} & +21.57\%\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+6 筆全部獲利，複利累計 +21.57\%；與做多的 +9.51\% 合併後報酬為 +33.13\%。
+
+\begin{itemize}
+\item \textbf{獲利來自週四盤中與週五跳空。}週四開盤到收盤平均 \m 1.62\%，週五開盤平均再比週四收盤低 1.69\%。
+\item \textbf{最後一筆尚未結束。}11/13 尚未開盤，該筆以 11/12 收盤價暫計，實際結果取決於週五開盤。
+\end{itemize}
+
+\section{討論}
+
+\paragraph{結果的一致性。}六項檢定分別採用參數、無母數與重抽樣三種不同的統計假設，結論一致。效果量屬大效果，95\% 信賴區間不包含零，逐一剔除任一週四後結果仍然顯著。
+
+\paragraph{效應的型態。}週四的跌幅集中在盤中：開盤到收盤平均 \m 1.62\%，隔夜跳空僅 \m 0.18\%。第四節的策略正是利用這個型態，避開週四盤中的多頭部位並反手放空。
+
+\paragraph{後續研究。}動畫仍在播映中，後續各集的週四可作為樣本外資料，檢驗此效應與第四節的策略是否延續。
+
+\section{結論}
+
+《FX戰士久留美》開播以來，台股在週四播映日的平均報酬為 \m 1.80\%，顯著低於其他交易日的 +0.12\%（$p=0.020$），且已連續 6 個週四收黑。樣本內回測中，週五開盤買進、週三收盤賣出的報酬為 +9.51\%，加上反手放空後為 +33.13\%，同期買進持有為 \m 10.11\%。
+
+這是一個在 7 個觀察值上成立的統計關聯，不構成交易依據。
+
+\medskip
+\noindent\textbf{本文僅為統計研究，不構成投資建議。}
+
+\begin{thebibliography}{9}
+\bibitem{denfami} 電ファミニコゲーマー。TV アニメ『FX戦士くるみちゃん』10 月 1 日より放送スタート。\url{https://news.denfaminicogamer.jp/news/2608312p}
+\bibitem{threads} @hpliao97。Threads 貼文（本研究的啟發來源）。\url{https://www.threads.com/@hpliao97/post/DfoPSVpGg6b}
+\bibitem{twse} 臺灣證券交易所。發行量加權股價指數歷史資料（2026 年 10 月、11 月）。\url{https://www.twse.com.tw/rwd/zh/TAIEX/MI_5MINS_HIST?date=20261112&response=json}
+\end{thebibliography}
+
+\medskip
+\noindent{\small 註：統計計算以 Python（NumPy、SciPy）執行。}
+
+\end{document}
